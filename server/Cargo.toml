@@ -1,0 +1,97 @@
+[package]
+description = "Arrow template service gRPC server"
+keywords    = ["vtol", "server", "grpc", "rest", "template-rust"] # max 5
+name        = "svc-template-rust"
+version     = "0.2.0-develop.7"
+
+authors.workspace      = true
+categories.workspace   = true
+edition.workspace      = true
+homepage.workspace     = true
+license-file.workspace = true
+repository.workspace   = true
+
+[features]
+default          = []
+dev              = ["mock"]
+test_util        = ["mock", "stub_backends"]
+vendored-openssl = ["openssl/vendored"]
+# Will add a 'mock' module for the enabled resources, providing access to mock data generation functions
+mock = []
+# Will use a stubbed backend connection, only use for tests!
+stub_backends = [
+  # FIXME: add mock_clients of actual services you're depending on
+  "svc-storage-client-grpc/stub_client",
+  "svc-storage-client-grpc/stub_backends",
+]
+# Will implement stub functions for the server, only use for tests!
+stub_server = ["test_util"]
+# Only added to support client-grpc feature when running tests
+stub_client = ["stub_backends"]
+
+[dependencies]
+anyhow       = "1.0"
+axum         = "0.5"
+cargo-husky  = "1"
+chrono       = { version = "0.4", features = ["serde"] }
+clap         = { version = "4.4", features = ["derive"] }
+config       = "0.13"
+dotenv       = "0.15"
+hyper        = "0.14"
+log          = "0.4"
+openssl      = "0.10"
+prost        = "0.12"
+serde        = "1.0"
+serde_json   = "1.0"
+tokio        = { version = "1.33", features = ["full"] }
+tokio-util   = "0.7"
+tonic        = "0.10"
+tonic-health = "0.10"
+tower        = { version = "0.4", features = ["limit"] }
+tower-http   = { version = "0.4", features = ["cors", "trace"] }
+
+# ========================================================
+# FIXME: This is used as an example, you can point to other services's clients instead.
+# ========================================================
+[dependencies.svc-template-rust-client-grpc]
+git = "https://github.com/Arrow-air/svc-template-rust.git"
+tag = "v0.2.0-develop.4"
+
+[dependencies.svc-storage-client-grpc]
+features = ["adsb"]
+git      = "https://github.com/Arrow-air/svc-storage"
+tag      = "latest-develop"
+# ========================================================
+
+[dependencies.lib-common]
+git = "https://github.com/Arrow-air/lib-common"
+tag = "latest-develop"
+
+[dependencies.log4rs]
+features = [
+  "background_rotation",
+  "rolling_file_appender",
+  "json_format",
+  "gzip",
+]
+version = "1.2"
+
+[dependencies.utoipa]
+features = ["axum_extras", "chrono"]
+version  = "4.0"
+
+[dev-dependencies]
+logtest = "2.0"
+
+[dev-dependencies.cargo-husky]
+default-features = false          # Disable features which are enabled by default
+features         = ["user-hooks"]
+version          = "1"
+
+# Make sure we enable the required modules when running tests
+[dev-dependencies.svc-template-rust]
+features = ["dev"]
+path     = "."
+
+[build-dependencies]
+tonic-build = "0.10"
