@@ -2,27 +2,51 @@
 
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
-use chrono::{DateTime, Utc};
 
-/// Example Request Body Information Type
+/// Information needed to build a vertipad
 #[derive(Debug, Clone)]
 #[derive(Deserialize, Serialize)]
 #[derive(ToSchema, IntoParams)]
-pub struct ExampleRequest {
-    /// Itinerary UUID to Cancel
-    pub id: String,
+pub struct Vertipad {
+    /// The latitude of the pad
+    pub centroid_latitude: f64,
+    
+    /// The longitude of the pad
+    pub centroid_longitude: f64,
 
-    /// The time of the request
-    pub timestamp: DateTime<Utc>
+    /// The radius of the pad in meters
+    pub radius_meters: f32,
+
+    /// The informal label for this pad
+    pub label: String
 }
 
-/// Confirm itinerary Operation Status
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub enum ExampleStatus {
-    /// Unauthorized request
-    #[schema(example = "Unauthorized request.")]
-    Unauthorized(String),
+/// Information needed to add a vertiport
+#[derive(Debug, Clone)]
+#[derive(Deserialize, Serialize)]
+#[derive(ToSchema, IntoParams)]
+pub struct AddVertiportRequest {
+    /// The label of the vertiport
+    pub label: String,
 
-    /// Unavailable Service
-    Unavailable,
+    /// The bounding polygon of this vertiport
+    pub vertices: Vec<(f64, f64)>,
+
+    /// The pads at this vertiport
+    pub pads: Vec<Vertipad>
+}
+
+/// Information needed to add an aircraft
+#[derive(Debug, Clone)]
+#[derive(Deserialize, Serialize)]
+#[derive(ToSchema, IntoParams)]
+pub struct AddAircraftRequest {
+    /// The nickname of the aircraft
+    pub nickname: String,
+
+    /// The registration number of the aircraft
+    pub registration_number: String,
+
+    /// The hangar ID
+    pub hangar_id: String
 }

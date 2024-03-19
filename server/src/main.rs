@@ -1,7 +1,7 @@
 //! Main function starting the server and initializing dependencies.
 
 use log::info;
-use svc_template_rust::*;
+use svc_itest::*;
 
 /// Main entry point: starts gRPC Server on specified address and port
 #[tokio::main]

@@ -22,13 +22,13 @@ where
     /// # Examples
     /// ```
     /// use lib_common::grpc::get_endpoint_from_env;
-    /// use svc_template_rust_client_grpc::prelude::*;
+    /// use svc_itest_client_grpc::prelude::*;
     ///
     /// async fn example () -> Result<(), Box<dyn std::error::Error>> {
     ///     let (host, port) = get_endpoint_from_env("SERVER_HOSTNAME", "SERVER_PORT_GRPC");
-    ///     let client = TemplateRustClient::new_client(&host, port, "template_rust");
+    ///     let client = TemplateRustClient::new_client(&host, port, "itest");
     ///     let response = client
-    ///         .is_ready(template_rust::ReadyRequest {})
+    ///         .is_ready(itest::ReadyRequest {})
     ///         .await?;
     ///     println!("RESPONSE={:?}", response.into_inner());
     ///     Ok(())

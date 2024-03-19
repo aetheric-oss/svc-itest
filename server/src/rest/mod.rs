@@ -11,15 +11,18 @@ use utoipa::OpenApi;
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        // rest_api::query_flight
+        api::add_vertiport,
+        api::add_aircraft
     ),
     components(
         schemas(
-            api::rest_types::ExampleRequest
+            api::rest_types::AddVertiportRequest,
+            api::rest_types::AddAircraftRequest,
+            api::rest_types::Vertipad
         )
     ),
     tags(
-        (name = "svc-template-rust", description = "svc-template-rust REST API")
+        (name = "svc-itest", description = "svc-itest REST API")
     )
 )]
 struct ApiDoc;

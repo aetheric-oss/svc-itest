@@ -2,6 +2,7 @@
 use tokio::sync::OnceCell;
 
 // FIXME: import other microservices' GRPC clients instead, this is just an example.
+use svc_gis_client_grpc::prelude::*;
 use svc_storage_client_grpc::prelude::Clients;
 
 pub(crate) static CLIENTS: OnceCell<GrpcClients> = OnceCell::const_new();
@@ -22,8 +23,11 @@ pub async fn get_clients() -> &'static GrpcClients {
 /// Struct to hold all gRPC client connections
 #[derive(Clone, Debug)]
 pub struct GrpcClients {
-    /// FIXME: add the correct clients here
+    /// grpc client for svc-storage
     pub storage: Clients,
+
+    /// grpc client for svc-gis
+    pub gis: GisClient,
 }
 
 impl GrpcClients {
@@ -33,6 +37,7 @@ impl GrpcClients {
 
         GrpcClients {
             storage: storage_clients,
+            gis: GisClient::new_client(&config.gis_host_grpc, config.gis_port_grpc, "gis"),
         }
     }
 }

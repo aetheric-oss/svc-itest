@@ -1,6 +1,6 @@
 //! gRPC server implementation
 
-/// module generated from proto/svc-template-rust-grpc.proto
+/// module generated from proto/svc-itest-grpc.proto
 mod grpc_server {
     #![allow(unused_qualifications, missing_docs)]
     tonic::include_proto!("grpc");
@@ -28,7 +28,7 @@ impl RpcService for ServerImpl {
         &self,
         request: Request<ReadyRequest>,
     ) -> Result<Response<ReadyResponse>, Status> {
-        grpc_info!("(is_ready) template_rust server.");
+        grpc_info!("(is_ready) itest server.");
         grpc_debug!("(is_ready) [{:?}].", request);
         let response = ReadyResponse { ready: true };
         Ok(Response::new(response))
@@ -39,8 +39,8 @@ impl RpcService for ServerImpl {
 ///
 /// # Examples
 /// ```
-/// use svc_template_rust::grpc::server::grpc_server;
-/// use svc_template_rust::Config;
+/// use svc_itest::grpc::server::grpc_server;
+/// use svc_itest::Config;
 /// async fn example() -> Result<(), tokio::task::JoinError> {
 ///     let config = Config::default();
 ///     tokio::spawn(grpc_server(config, None)).await
@@ -91,7 +91,7 @@ impl RpcService for ServerImpl {
         &self,
         request: Request<ReadyRequest>,
     ) -> Result<Response<ReadyResponse>, Status> {
-        grpc_warn!("(is_ready MOCK) template_rust server.");
+        grpc_warn!("(is_ready MOCK) itest server.");
         grpc_debug!("(is_ready MOCK) [{:?}].", request);
         let response = ReadyResponse { ready: true };
         Ok(Response::new(response))
