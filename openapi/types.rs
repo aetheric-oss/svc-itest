@@ -7,15 +7,15 @@ use utoipa::{IntoParams, ToSchema};
 #[derive(Debug, Clone)]
 #[derive(Deserialize, Serialize)]
 #[derive(ToSchema, IntoParams)]
-pub struct Vertipad {
+pub struct AddVertipadRequest {
+    /// The ID of the vertiport
+    pub vertiport_id: String,
+
     /// The latitude of the pad
-    pub centroid_latitude: f64,
+    pub latitude: f64,
     
     /// The longitude of the pad
-    pub centroid_longitude: f64,
-
-    /// The radius of the pad in meters
-    pub radius_meters: f32,
+    pub longitude: f64,
 
     /// The informal label for this pad
     pub label: String
@@ -30,10 +30,7 @@ pub struct AddVertiportRequest {
     pub label: String,
 
     /// The bounding polygon of this vertiport
-    pub vertices: Vec<(f64, f64)>,
-
-    /// The pads at this vertiport
-    pub pads: Vec<Vertipad>
+    pub vertices: Vec<(f64, f64)>
 }
 
 /// Information needed to add an aircraft
@@ -48,5 +45,18 @@ pub struct AddAircraftRequest {
     pub registration_number: String,
 
     /// The hangar ID
-    pub hangar_id: String
+    pub hangar_id: String,
+
+    /// The hangar bay ID
+    pub hangar_bay_id: String
+}
+
+
+/// Information needed to build a vertipad
+#[derive(Debug, Clone)]
+#[derive(Deserialize, Serialize)]
+#[derive(ToSchema, IntoParams)]
+pub struct AddUserRequest {
+    /// The display name of the user
+    pub display_name: String,
 }

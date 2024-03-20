@@ -12,13 +12,16 @@ use utoipa::OpenApi;
 #[openapi(
     paths(
         api::add_vertiport,
-        api::add_aircraft
+        api::add_vertipad,
+        api::add_aircraft,
+        api::add_user,
     ),
     components(
         schemas(
             api::rest_types::AddVertiportRequest,
+            api::rest_types::AddVertipadRequest,
             api::rest_types::AddAircraftRequest,
-            api::rest_types::Vertipad
+            api::rest_types::AddUserRequest,
         )
     ),
     tags(

@@ -53,8 +53,7 @@ uuid         = { version = "1.7.0", features = ["v4", "serde"] }
 
 [dependencies.svc-gis-client-grpc]
 git = "https://github.com/Arrow-air/svc-gis.git"
-# tag = "v0.2.0-develop.4"
-branch = "am-smith/get-flights-grpc"
+tag = "latest-develop"
 
 [dependencies.svc-storage-client-grpc]
 features = ["vertiport", "vertipad", "vehicle", "user"]

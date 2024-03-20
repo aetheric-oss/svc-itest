@@ -2313,8 +2313,8 @@ checksum = "81cdd64d312baedb58e21336b31bc043b77e01cc99033ce76ef539f78e965ebc"
 
 [[package]]
 name = "svc-gis-client-grpc"
-version = "0.1.1-develop.6"
-source = "git+https://github.com/Arrow-air/svc-gis.git?branch=am-smith/get-flights-grpc#2503556d268d3496d4fc80fa2ae8c3825a860cef"
+version = "0.1.1-develop.7"
+source = "git+https://github.com/Arrow-air/svc-gis.git?tag=latest-develop#c659ef092308c5b2428c95a45162bab2c78453a1"
 dependencies = [
  "cfg-if",
  "chrono",
