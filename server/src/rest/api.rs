@@ -12,7 +12,7 @@ use chrono::Utc;
 use hyper::StatusCode;
 use svc_gis_client_grpc::client::{Coordinates, UpdateVertiportsRequest, Vertiport};
 use svc_gis_client_grpc::prelude::GisServiceClient;
-use svc_storage_client_grpc::prelude::*;
+use svc_storage_client_grpc::prelude::{user::AuthMethod, *};
 use uuid::Uuid;
 
 /// Provides a way to tell a caller if the service is healthy.
@@ -72,17 +72,13 @@ pub async fn add_vertiport(
     Extension(grpc_clients): Extension<GrpcClients>,
     Json(payload): Json<AddVertiportRequest>,
 ) -> Result<Json<String>, StatusCode> {
-    rest_debug!("(query_vertiports) entry.");
+    rest_debug!("(add_vertiport) entry.");
 
-    let schedule: Option<String> = Some(
-        "\
-        DTSTART:20221020T180000Z;DURATION:PT14H
-        RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR
-        DTSTART:20221022T000000Z;DURATION:PT24H
-        RRULE:FREQ=WEEKLY;BYDAY=SA,SU"
-            .to_string(),
-    );
-
+    let schedule = "DTSTART:20221020T180000Z;DURATION:PT24H
+    RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+        .to_string()
+        .replace(' ', "");
+    let schedule = Some(schedule);
     let points: Vec<GeoPoint> = payload
         .vertices
         .iter()
@@ -94,7 +90,7 @@ pub async fn add_vertiport(
 
     let data = vertiport::Data {
         name: payload.label.clone(),
-        description: "".to_string(),
+        description: format!("A vertiport named '{}'", payload.label),
         geo_location: Some(GeoPolygon {
             exterior: Some(GeoLineString { points }),
             interiors: vec![],
@@ -120,32 +116,6 @@ pub async fn add_vertiport(
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .id;
-
-    for pad in &payload.pads {
-        let data = vertipad::Data {
-            vertiport_id: vertiport_id.clone(),
-            name: pad.label.clone(),
-            geo_location: Some(GeoPoint {
-                latitude: pad.centroid_latitude,
-                longitude: pad.centroid_longitude,
-            }),
-            enabled: true,
-            occupied: false,
-            schedule: schedule.clone(),
-            created_at: None,
-            updated_at: None,
-        };
-
-        grpc_clients
-            .storage
-            .vertipad
-            .insert(data)
-            .await
-            .map_err(|e| {
-                rest_error!("(add_vertiport) Error: {}.", e);
-                StatusCode::INTERNAL_SERVER_ERROR
-            })?;
-    }
 
     let vertiports = vec![Vertiport {
         identifier: vertiport_id.clone(),
@@ -176,79 +146,61 @@ pub async fn add_vertiport(
     Ok(Json(vertiport_id))
 }
 
-// /// Example REST API function
-// #[utoipa::path(
-//     delete,
-//     path = "/demo/vertiport",
-//     tag = "svc-itest",
-//     request_body = String,
-//     responses(
-//         (status = 200, description = "Request successful.", body = String),
-//         (status = 500, description = "Request unsuccessful."),
-//     )
-// )]
-// pub async fn delete_vertiport(
-//     Extension(mut grpc_clients): Extension<GrpcClients>,
-//     Json(payload): Json<String>,
-// ) -> Result<Json<String>, StatusCode> {
-//     rest_debug!("(query_vertiports) entry.");
+/// Add a vertiport to storage and GIS
+#[utoipa::path(
+    put,
+    path = "/demo/vertipad",
+    tag = "svc-itest",
+    request_body = AddVertipadRequest,
+    responses(
+        (status = 200, description = "Request successful.", body = String),
+        (status = 500, description = "Request unsuccessful."),
+    )
+)]
+pub async fn add_vertipad(
+    Extension(grpc_clients): Extension<GrpcClients>,
+    Json(payload): Json<AddVertipadRequest>,
+) -> Result<Json<String>, StatusCode> {
+    rest_debug!("(add_vertipad) entry.");
 
-//     const schedule = Some("\
-//         DTSTART:20221020T180000Z;DURATION:PT14H
-//         RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR
-//         DTSTART:20221022T000000Z;DURATION:PT24H
-//         RRULE:FREQ=WEEKLY;BYDAY=SA,SU".to_string()
-//     );
+    let schedule = "DTSTART:20221020T180000Z;DURATION:PT24H
+    RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+        .to_string()
+        .replace(' ', "");
+    let schedule = Some(schedule);
+    let data = vertipad::Data {
+        vertiport_id: payload.vertiport_id.clone(),
+        name: payload.label.clone(),
+        geo_location: Some(GeoPoint {
+            latitude: payload.latitude,
+            longitude: payload.longitude,
+        }),
+        enabled: true,
+        occupied: false,
+        schedule: schedule.clone(),
+        created_at: None,
+        updated_at: None,
+    };
 
-//     let data = vertiport::Data {
-//         name: payload.label.clone(),
-//         description: "".to_string(),
-//         geo_location: None,
-//         schedule,
-//         created_at: None,
-//         updated_at: None,
-//     }
+    let vertipad_id = grpc_clients
+        .storage
+        .vertipad
+        .insert(data)
+        .await
+        .map_err(|e| {
+            rest_error!("(add_vertipad) Error: {}.", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?
+        .into_inner()
+        .object
+        .ok_or_else(|| {
+            rest_error!("(add_vertipad) Error: no object returned.");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?
+        .id;
 
-//     let vertiport_id = grpc_clients
-//         .storage
-//         .vertiport
-//         .insert(data)
-//         .await
-//         .map_err(|e| {
-//             rest_error!("(add_vertiport) Error: {}.", e);
-//             StatusCode::INTERNAL_SERVER_ERROR
-//         })?
-//         .into_inner()
-//         .id;
-
-//     for pad in &payload.pads {
-//         let data = vertipad::Data {
-//             vertiport_id: vertiport_id.clone(),
-//             name: pad.label.clone(),
-//             geo_location: Some(GeoPoint {
-//                 latitude: pad.centroid_latitude,
-//                 longitude: pad.centroid_longitude,
-//             }),
-//             enabled: true,
-//             occupied: false,
-//             schedule: schedule.clone(),
-//             created_at: None,
-//             updated_at: None,
-//         };
-
-//         grpc_clients
-//             .storage
-//             .vertipad
-//             .insert(data)
-//             .await
-//             .map_err(|e| {
-//                 rest_error!("(add_vertiport) Error: {}.", e);
-//                 StatusCode::INTERNAL_SERVER_ERROR
-//             })?;
-//     }
-
-//     Ok(Json(format!("{}!", vertiport_id)))
-// }
+    Ok(Json(vertipad_id))
+}
 
 /// Add aircraft to storage
 #[utoipa::path(
@@ -267,14 +219,11 @@ pub async fn add_aircraft(
 ) -> Result<Json<String>, StatusCode> {
     rest_debug!("(add_aircraft) entry.");
 
-    let schedule: Option<String> = Some(
-        "\
-        DTSTART:20221020T180000Z;DURATION:PT14H
-        RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR
-        DTSTART:20221022T000000Z;DURATION:PT24H
-        RRULE:FREQ=WEEKLY;BYDAY=SA,SU"
-            .to_string(),
-    );
+    let schedule = "DTSTART:20221020T180000Z;DURATION:PT24H
+    RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+        .to_string()
+        .replace(' ', "");
+    let schedule = Some(schedule);
 
     let aircraft_id = grpc_clients
         .storage
@@ -285,6 +234,7 @@ pub async fn add_aircraft(
             serial_number: Uuid::new_v4().to_string(),
             description: Some(payload.nickname.clone()),
             hangar_id: Some(payload.hangar_id),
+            hangar_bay_id: Some(payload.hangar_bay_id),
             schedule,
             ..Default::default()
         })
@@ -302,6 +252,47 @@ pub async fn add_aircraft(
         .id;
 
     Ok(Json(aircraft_id))
+}
+
+/// Add user to storage
+#[utoipa::path(
+    put,
+    path = "/demo/user",
+    tag = "svc-itest",
+    request_body = AddUserRequest,
+    responses(
+        (status = 200, description = "Request successful.", body = String),
+        (status = 500, description = "Request unsuccessful."),
+    )
+)]
+pub async fn add_user(
+    Extension(grpc_clients): Extension<GrpcClients>,
+    Json(payload): Json<AddUserRequest>,
+) -> Result<Json<String>, StatusCode> {
+    rest_debug!("(add_user) entry.");
+
+    let auth_method = AuthMethod::Local as i32;
+    let user_id = grpc_clients
+        .storage
+        .user
+        .insert(user::Data {
+            auth_method,
+            display_name: payload.display_name.clone(),
+        })
+        .await
+        .map_err(|e| {
+            rest_error!("(add_user) Error: {}.", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?
+        .into_inner()
+        .object
+        .ok_or_else(|| {
+            rest_error!("(add_user) Error: no object returned.");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?
+        .id;
+
+    Ok(Json(user_id))
 }
 
 #[cfg(test)]
