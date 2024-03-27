@@ -82,7 +82,7 @@ pub async fn load_logger_config_from_file(config_file: &str) -> Result<(), Strin
 ///
 /// ## axum
 /// ```
-/// use svc_template_rust::shutdown_signal;
+/// use svc_itest::shutdown_signal;
 /// pub async fn server() {
 ///     let app = axum::Router::new();
 ///     axum::Server::bind(&"0.0.0.0:8000".parse().unwrap())
@@ -93,7 +93,7 @@ pub async fn load_logger_config_from_file(config_file: &str) -> Result<(), Strin
 ///
 /// ## tonic
 /// ```
-/// use svc_template_rust::shutdown_signal;
+/// use svc_itest::shutdown_signal;
 /// pub async fn server() {
 ///     let (_, health_service) = tonic_health::server::health_reporter();
 ///     tonic::transport::Server::builder()
@@ -104,7 +104,7 @@ pub async fn load_logger_config_from_file(config_file: &str) -> Result<(), Strin
 ///
 /// ## using a shutdown signal channel
 /// ```
-/// use svc_template_rust::shutdown_signal;
+/// use svc_itest::shutdown_signal;
 /// pub async fn server() {
 ///     let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel::<()>();
 ///     let (_, health_service) = tonic_health::server::health_reporter();

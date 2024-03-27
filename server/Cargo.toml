@@ -1,7 +1,7 @@
 [package]
 description = "Arrow template service gRPC server"
-keywords    = ["vtol", "server", "grpc", "rest", "template-rust"] # max 5
-name        = "svc-template-rust"
+keywords    = ["vtol", "server", "grpc", "rest", "itest"] # max 5
+name        = "svc-itest"
 version     = "0.2.0-develop.7"
 
 authors.workspace      = true
@@ -49,19 +49,16 @@ tonic        = "0.10"
 tonic-health = "0.10"
 tower        = { version = "0.4", features = ["limit"] }
 tower-http   = { version = "0.4", features = ["cors", "trace"] }
+uuid         = { version = "1.7.0", features = ["v4", "serde"] }
 
-# ========================================================
-# FIXME: This is used as an example, you can point to other services's clients instead.
-# ========================================================
-[dependencies.svc-template-rust-client-grpc]
-git = "https://github.com/Arrow-air/svc-template-rust.git"
-tag = "v0.2.0-develop.4"
+[dependencies.svc-gis-client-grpc]
+git = "https://github.com/Arrow-air/svc-gis.git"
+tag = "latest-develop"
 
 [dependencies.svc-storage-client-grpc]
-features = ["adsb"]
-git      = "https://github.com/Arrow-air/svc-storage"
+features = ["vertiport", "vertipad", "vehicle", "user"]
+git      = "https://github.com/Arrow-air/svc-storage.git"
 tag      = "latest-develop"
-# ========================================================
 
 [dependencies.lib-common]
 git = "https://github.com/Arrow-air/lib-common"
@@ -89,7 +86,7 @@ features         = ["user-hooks"]
 version          = "1"
 
 # Make sure we enable the required modules when running tests
-[dev-dependencies.svc-template-rust]
+[dev-dependencies.svc-itest]
 features = ["dev"]
 path     = "."
 

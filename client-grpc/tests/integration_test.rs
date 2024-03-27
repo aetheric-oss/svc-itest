@@ -18,9 +18,9 @@ fn get_log_string(function: &str, name: &str) -> String {
 async fn test_client_requests_and_logs() {
     use logtest::Logger;
 
-    use svc_template_rust_client_grpc::prelude::*;
+    use svc_itest_client_grpc::prelude::*;
 
-    let name = "template_rust";
+    let name = "itest";
     let (server_host, server_port) =
         lib_common::grpc::get_endpoint_from_env("GRPC_HOST", "GRPC_PORT");
 
@@ -31,7 +31,7 @@ async fn test_client_requests_and_logs() {
 
     //test_is_ready_request_logs
     {
-        let result = client.is_ready(template_rust::ReadyRequest {}).await;
+        let result = client.is_ready(itest::ReadyRequest {}).await;
         println!("{:?}", result);
         assert!(result.is_ok());
 

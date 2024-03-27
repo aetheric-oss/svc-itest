@@ -13,12 +13,12 @@ pub type TemplateRustClient = GrpcClient<RpcServiceClient<Channel>>;
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "stub_backends")] {
-        use svc_template_rust::grpc::server::{RpcServiceServer, ServerImpl};
+        use svc_itest::grpc::server::{RpcServiceServer, ServerImpl};
         lib_common::grpc_mock_client!(RpcServiceClient, RpcServiceServer, ServerImpl);
-        super::log_macros!("grpc", "app::client::mock::template_rust");
+        super::log_macros!("grpc", "app::client::mock::itest");
     } else {
         lib_common::grpc_client!(RpcServiceClient);
-        super::log_macros!("grpc", "app::client::template_rust");
+        super::log_macros!("grpc", "app::client::itest");
     }
 }
 
@@ -63,7 +63,7 @@ mod tests {
     #[tokio::test]
     #[cfg(not(feature = "stub_client"))]
     async fn test_client_connect() {
-        let name = "template_rust";
+        let name = "itest";
         let (server_host, server_port) =
             lib_common::grpc::get_endpoint_from_env("GRPC_HOST", "GRPC_PORT");
 
@@ -77,7 +77,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_client_is_ready_request() {
-        let name = "template_rust";
+        let name = "itest";
         let (server_host, server_port) =
             lib_common::grpc::get_endpoint_from_env("GRPC_HOST", "GRPC_PORT");
 

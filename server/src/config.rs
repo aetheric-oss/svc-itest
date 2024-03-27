@@ -18,6 +18,10 @@ pub struct Config {
     pub storage_host_grpc: String,
     /// port of storage server
     pub storage_port_grpc: u16,
+    /// gis server
+    pub gis_host_grpc: String,
+    /// gis port
+    pub gis_port_grpc: u16,
     /// path to log configuration YAML file
     pub log_config: String,
     /// Rate limit - requests per second for REST requests
@@ -44,6 +48,8 @@ impl Config {
             docker_port_rest: 8000,
             storage_port_grpc: 50051,
             storage_host_grpc: String::from("svc-storage"),
+            gis_host_grpc: String::from("svc-gis"),
+            gis_port_grpc: 50052,
             log_config: String::from("log4rs.yaml"),
             rest_request_limit_per_second: 2,
             rest_concurrency_limit_per_service: 5,
@@ -94,6 +100,8 @@ mod tests {
         assert_eq!(config.docker_port_rest, 8000);
         assert_eq!(config.storage_port_grpc, 50051);
         assert_eq!(config.storage_host_grpc, String::from("svc-storage"));
+        assert_eq!(config.gis_host_grpc, String::from("svc-gis"));
+        assert_eq!(config.gis_port_grpc, 50052);
         assert_eq!(config.log_config, String::from("log4rs.yaml"));
         assert_eq!(config.rest_concurrency_limit_per_service, 5);
         assert_eq!(config.rest_request_limit_per_second, 2);
@@ -114,6 +122,8 @@ mod tests {
         std::env::set_var("DOCKER_PORT_REST", "9876");
         std::env::set_var("STORAGE_HOST_GRPC", "test_host_grpc");
         std::env::set_var("STORAGE_PORT_GRPC", "12345");
+        std::env::set_var("GIS_HOST_GRPC", "test_host_grpc");
+        std::env::set_var("GIS_PORT_GRPC", "12342");
         std::env::set_var("LOG_CONFIG", "config_file.yaml");
         std::env::set_var("REST_CONCURRENCY_LIMIT_PER_SERVICE", "255");
         std::env::set_var("REST_REQUEST_LIMIT_PER_SECOND", "255");
@@ -130,6 +140,8 @@ mod tests {
         assert_eq!(config.docker_port_rest, 9876);
         assert_eq!(config.storage_port_grpc, 12345);
         assert_eq!(config.storage_host_grpc, String::from("test_host_grpc"));
+        assert_eq!(config.gis_host_grpc, String::from("test_host_grpc"));
+        assert_eq!(config.gis_port_grpc, 12342);
         assert_eq!(config.log_config, String::from("config_file.yaml"));
         assert_eq!(config.rest_concurrency_limit_per_service, 255);
         assert_eq!(config.rest_request_limit_per_second, 255);

@@ -31,3 +31,10 @@ NocoDB
 logtest
 oneshot
 Stuckee
+dtstart
+rrule
+byday
+vertipad
+seccomp
+Lcov
+itest

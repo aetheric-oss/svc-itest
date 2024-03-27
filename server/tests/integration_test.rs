@@ -1,6 +1,6 @@
 //! Integration Tests
 use lib_common::log_macros;
-use svc_template_rust::*;
+use svc_itest::*;
 
 log_macros!("it", "test");
 
@@ -15,9 +15,9 @@ fn get_log_string(function: &str, name: &str) -> String {
 #[tokio::test]
 async fn test_server_requests_and_logs() {
     use logtest::Logger;
-    use svc_template_rust::grpc::server::*;
+    use svc_itest::grpc::server::*;
 
-    let name = "template_rust";
+    let name = "itest";
 
     // Start the logger.
     let mut logger = Logger::start();

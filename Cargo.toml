@@ -1,12 +1,13 @@
 [workspace]
-members = ["server", "client-grpc", "client-rest"]
+members  = ["server", "client-grpc", "client-rest"]
+resolver = "2"
 
 [workspace.package]
 authors      = ["arrow-services <group-services@arrowair.com>"]
 edition      = "2021"
 homepage     = "https://www.arrowair.com/docs/documentation/services/intro"
 license-file = "LICENSE"
-repository   = "https://github.com/Arrow-air/svc-template-rust"
+repository   = "https://github.com/Arrow-air/svc-itest"
 
 categories = [
   "aerospace::drones",

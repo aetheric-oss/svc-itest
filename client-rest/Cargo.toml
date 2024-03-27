@@ -1,7 +1,7 @@
 [package]
-description = "Arrow template-rust service REST client"
-keywords    = ["vtol", "client", "rest", "template-rust"] # max 5
-name        = "svc-template-rust-client-rest"
+description = "Arrow itest service REST client"
+keywords    = ["vtol", "client", "rest", "itest"] # max 5
+name        = "svc-itest-client-rest"
 version     = "0.2.0-develop.7"
 
 authors.workspace      = true
