@@ -59,4 +59,6 @@ pub struct AddAircraftRequest {
 pub struct AddUserRequest {
     /// The display name of the user
     pub display_name: String,
+    /// The email of the user
+    pub email: String,
 }

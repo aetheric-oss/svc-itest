@@ -278,6 +278,7 @@ pub async fn add_user(
         .insert(user::Data {
             auth_method,
             display_name: payload.display_name.clone(),
+            email: payload.email.clone(),
         })
         .await
         .map_err(|e| {
