@@ -2,7 +2,7 @@
 description = "Arrow template service gRPC server"
 keywords    = ["vtol", "server", "grpc", "rest", "itest"] # max 5
 name        = "svc-itest"
-version     = "0.2.0-develop.7"
+version     = "0.0.1-develop.1"
 
 authors.workspace      = true
 categories.workspace   = true

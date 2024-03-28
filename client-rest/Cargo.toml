@@ -2,7 +2,7 @@
 description = "Arrow itest service REST client"
 keywords    = ["vtol", "client", "rest", "itest"] # max 5
 name        = "svc-itest-client-rest"
-version     = "0.2.0-develop.7"
+version     = "0.0.1-develop.1"
 
 authors.workspace      = true
 categories.workspace   = true
