@@ -17,6 +17,9 @@ pub struct AddVertipadRequest {
     /// The longitude of the pad
     pub longitude: f64,
 
+    /// The altitude of the pad in meters
+    pub altitude: f64,
+
     /// The informal label for this pad
     pub label: String
 }
@@ -30,7 +33,10 @@ pub struct AddVertiportRequest {
     pub label: String,
 
     /// The bounding polygon of this vertiport
-    pub vertices: Vec<(f64, f64)>
+    pub vertices: Vec<(f64, f64)>,
+
+    /// The starting altitude of the vertiport in meters
+    pub altitude: f64
 }
 
 /// Information needed to add an aircraft
@@ -51,7 +57,6 @@ pub struct AddAircraftRequest {
     pub hangar_bay_id: String
 }
 
-
 /// Information needed to build a vertipad
 #[derive(Debug, Clone)]
 #[derive(Deserialize, Serialize)]
@@ -61,4 +66,15 @@ pub struct AddUserRequest {
     pub display_name: String,
     /// The email of the user
     pub email: String,
+}
+
+/// Information needed to build a vertipad
+#[derive(Debug, Clone)]
+#[derive(Deserialize, Serialize)]
+#[derive(ToSchema, IntoParams)]
+pub struct AddScannerRequest {
+    /// The display name of the user
+    pub organization_id: String,
+    /// The email of the user
+    pub scanner_type: String,
 }

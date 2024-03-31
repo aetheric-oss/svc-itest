@@ -85,6 +85,7 @@ pub async fn add_vertiport(
         .map(|vx| GeoPoint {
             latitude: vx.0,
             longitude: vx.1,
+            altitude: payload.altitude,
         })
         .collect();
 
@@ -174,6 +175,7 @@ pub async fn add_vertipad(
         geo_location: Some(GeoPoint {
             latitude: payload.latitude,
             longitude: payload.longitude,
+            altitude: payload.altitude,
         }),
         enabled: true,
         occupied: false,
@@ -294,6 +296,68 @@ pub async fn add_user(
         .id;
 
     Ok(Json(user_id))
+}
+
+impl TryFrom<AddScannerRequest> for scanner::Data {
+    type Error = String;
+
+    fn try_from(value: AddScannerRequest) -> Result<Self, Self::Error> {
+        let scanner_type = match value.scanner_type.as_str() {
+            "underbelly" => scanner::ScannerType::Underbelly as i32,
+            "mobile" => scanner::ScannerType::Mobile as i32,
+            "locker" => scanner::ScannerType::Locker as i32,
+            "facility" => scanner::ScannerType::Facility as i32,
+            _ => return Err("Invalid scanner type.".to_string()),
+        };
+
+        Ok(scanner::Data {
+            organization_id: value.organization_id,
+            scanner_type,
+            scanner_status: scanner::ScannerStatus::Active as i32,
+        })
+    }
+}
+
+/// Add user to storage
+#[utoipa::path(
+    put,
+    path = "/demo/scanner",
+    tag = "svc-itest",
+    request_body = AddScannerRequest,
+    responses(
+        (status = 200, description = "Request successful.", body = String),
+        (status = 500, description = "Request unsuccessful."),
+    )
+)]
+pub async fn add_scanner(
+    Extension(grpc_clients): Extension<GrpcClients>,
+    Json(payload): Json<AddScannerRequest>,
+) -> Result<Json<String>, StatusCode> {
+    rest_debug!("(add_scanner) entry.");
+
+    let data: scanner::Data = payload.try_into().map_err(|e| {
+        rest_error!("(add_scanner) Error: {}.", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    let scanner_id = grpc_clients
+        .storage
+        .scanner
+        .insert(data)
+        .await
+        .map_err(|e| {
+            rest_error!("(add_user) Error: {}.", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?
+        .into_inner()
+        .object
+        .ok_or_else(|| {
+            rest_error!("(add_user) Error: no object returned.");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?
+        .id;
+
+    Ok(Json(scanner_id))
 }
 
 #[cfg(test)]
