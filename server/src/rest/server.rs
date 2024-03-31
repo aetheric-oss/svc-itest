@@ -82,6 +82,7 @@ pub async fn rest_server(
         .route("/demo/vertipad", routing::put(api::add_vertipad))
         .route("/demo/aircraft", routing::put(api::add_aircraft))
         .route("/demo/user", routing::put(api::add_user))
+        .route("/demo/scanner", routing::put(api::add_scanner))
         .layer(
             CorsLayer::new()
                 .allow_origin(cors_allowed_origin)

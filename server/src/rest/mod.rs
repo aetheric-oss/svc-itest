@@ -15,6 +15,7 @@ use utoipa::OpenApi;
         api::add_vertipad,
         api::add_aircraft,
         api::add_user,
+        api::add_scanner
     ),
     components(
         schemas(
@@ -22,6 +23,7 @@ use utoipa::OpenApi;
             api::rest_types::AddVertipadRequest,
             api::rest_types::AddAircraftRequest,
             api::rest_types::AddUserRequest,
+            api::rest_types::AddScannerRequest,
         )
     ),
     tags(
