@@ -32,6 +32,9 @@ pub struct AddVertiportRequest {
     /// The label of the vertiport
     pub label: String,
 
+    /// The address of the vertiport
+    pub address: String,
+
     /// The bounding polygon of this vertiport
     pub vertices: Vec<(f64, f64)>,
 

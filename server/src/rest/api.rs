@@ -91,7 +91,7 @@ pub async fn add_vertiport(
 
     let data = vertiport::Data {
         name: payload.label.clone(),
-        description: format!("A vertiport named '{}'", payload.label),
+        description: payload.address.clone(),
         geo_location: Some(GeoPolygon {
             exterior: Some(GeoLineString { points }),
             interiors: vec![],
