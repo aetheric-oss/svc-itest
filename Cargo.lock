@@ -130,7 +130,7 @@ checksum = "3d62b7694a562cdf5a74227903507c56ab2cc8bdd1f781ed5cb4cf9c9f810bfc"
 [[package]]
 name = "arrow-macros-core"
 version = "0.2.1-develop.0"
-source = "git+https://github.com/aetheric-oss/lib-common?tag=latest-develop#4ccaa5c1e59f5c8dc2a5efd97b7f17e0e6fa1692"
+source = "git+https://github.com/aetheric-oss/lib-common.git?tag=latest-develop#4ccaa5c1e59f5c8dc2a5efd97b7f17e0e6fa1692"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -140,8 +140,8 @@ dependencies = [
 
 [[package]]
 name = "arrow-macros-core"
-version = "0.2.1-develop.0"
-source = "git+https://github.com/aetheric-oss/lib-common.git?tag=v0.2.1-develop.0#ab297fda939b316ad4778dba2711e626246e048b"
+version = "2.0.0"
+source = "git+https://github.com/aetheric-oss/lib-common?tag=v2.0.0#4457c15d899697762dbaa46c142a78559df8144b"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -152,19 +152,19 @@ dependencies = [
 [[package]]
 name = "arrow-macros-derive"
 version = "0.2.1-develop.0"
-source = "git+https://github.com/aetheric-oss/lib-common?tag=latest-develop#4ccaa5c1e59f5c8dc2a5efd97b7f17e0e6fa1692"
+source = "git+https://github.com/aetheric-oss/lib-common.git?tag=latest-develop#4ccaa5c1e59f5c8dc2a5efd97b7f17e0e6fa1692"
 dependencies = [
- "arrow-macros-core 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "arrow-macros-core 0.2.1-develop.0",
  "proc-macro-error",
  "proc-macro2",
 ]
 
 [[package]]
 name = "arrow-macros-derive"
-version = "0.2.1-develop.0"
-source = "git+https://github.com/aetheric-oss/lib-common.git?tag=v0.2.1-develop.0#ab297fda939b316ad4778dba2711e626246e048b"
+version = "2.0.0"
+source = "git+https://github.com/aetheric-oss/lib-common?tag=v2.0.0#4457c15d899697762dbaa46c142a78559df8144b"
 dependencies = [
- "arrow-macros-core 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common.git?tag=v0.2.1-develop.0)",
+ "arrow-macros-core 2.0.0",
  "proc-macro-error",
  "proc-macro2",
 ]
@@ -406,6 +406,28 @@ dependencies = [
  "serde",
  "wasm-bindgen",
  "windows-targets 0.52.5",
+]
+
+[[package]]
+name = "chrono-tz"
+version = "0.8.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d59ae0466b83e838b81a54256c39d5d7c20b9d7daa10510a242d9b75abd5936e"
+dependencies = [
+ "chrono",
+ "chrono-tz-build",
+ "phf",
+]
+
+[[package]]
+name = "chrono-tz-build"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "433e39f13c9a060046954e0592a8d0a4bcb1040125cbf91cb8ee58964cfb350f"
+dependencies = [
+ "parse-zoneinfo",
+ "phf",
+ "phf_codegen",
 ]
 
 [[package]]
@@ -1156,9 +1178,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 [[package]]
 name = "lib-common"
 version = "0.2.1-develop.0"
-source = "git+https://github.com/aetheric-oss/lib-common?tag=latest-develop#4ccaa5c1e59f5c8dc2a5efd97b7f17e0e6fa1692"
+source = "git+https://github.com/aetheric-oss/lib-common.git?tag=latest-develop#4ccaa5c1e59f5c8dc2a5efd97b7f17e0e6fa1692"
 dependencies = [
- "arrow-macros-derive 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "arrow-macros-derive 0.2.1-develop.0",
  "cargo-husky",
  "chrono",
  "futures",
@@ -1175,18 +1197,25 @@ dependencies = [
 
 [[package]]
 name = "lib-common"
-version = "0.2.1-develop.0"
-source = "git+https://github.com/aetheric-oss/lib-common.git?tag=v0.2.1-develop.0#ab297fda939b316ad4778dba2711e626246e048b"
+version = "2.0.0"
+source = "git+https://github.com/aetheric-oss/lib-common?tag=v2.0.0#4457c15d899697762dbaa46c142a78559df8144b"
 dependencies = [
- "arrow-macros-derive 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common.git?tag=v0.2.1-develop.0)",
+ "arrow-macros-derive 2.0.0",
  "cargo-husky",
  "chrono",
+ "chrono-tz",
  "futures",
+ "http",
+ "hyper",
  "log",
+ "log4rs",
  "prost",
  "prost-wkt-types",
+ "tokio",
  "tonic",
+ "tower",
  "trybuild",
+ "uuid",
 ]
 
 [[package]]
@@ -1524,6 +1553,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "parse-zoneinfo"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f2a05b18d44e2957b88f96ba460715e295bc1d7510468a2f3d3b44535d26c24"
+dependencies = [
+ "regex",
+]
+
+[[package]]
 name = "paste"
 version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1603,6 +1641,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ade2d8b8f33c7333b51bcf0428d37e217e9f32192ae4772156f65063b8ce03dc"
 dependencies = [
  "phf_shared",
+]
+
+[[package]]
+name = "phf_codegen"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8d39688d359e6b34654d328e262234662d16cc0f60ec8dcbe5e718709342a5a"
+dependencies = [
+ "phf_generator",
+ "phf_shared",
+]
+
+[[package]]
+name = "phf_generator"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48e4cc64c2ad9ebe670cb8fd69dd50ae301650392e81c05f9bfcb2d5bdbc24b0"
+dependencies = [
+ "phf_shared",
+ "rand",
 ]
 
 [[package]]
@@ -2312,12 +2370,11 @@ checksum = "81cdd64d312baedb58e21336b31bc043b77e01cc99033ce76ef539f78e965ebc"
 
 [[package]]
 name = "svc-gis-client-grpc"
-version = "0.1.1-develop.11"
-source = "git+https://github.com/aetheric-oss/svc-gis.git?tag=latest-develop#5e8ba3de255d4c57238587ab2f4167f28a7dbd28"
+version = "0.2.0"
+source = "git+https://github.com/aetheric-oss/svc-gis.git?tag=v0.2.0#fbded26bb4f7222a6a5c090e394380b72f560312"
 dependencies = [
  "cfg-if",
- "chrono",
- "lib-common 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common.git?tag=v0.2.1-develop.0)",
+ "lib-common 2.0.0",
  "log",
  "num-derive",
  "num-traits",
@@ -2329,7 +2386,6 @@ dependencies = [
  "serde_json",
  "strum",
  "tonic",
- "uuid",
 ]
 
 [[package]]
@@ -2339,12 +2395,11 @@ dependencies = [
  "anyhow",
  "axum 0.5.17",
  "cargo-husky",
- "chrono",
  "clap",
  "config",
  "dotenv",
  "hyper",
- "lib-common 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "lib-common 2.0.0",
  "log",
  "log4rs",
  "logtest",
@@ -2363,7 +2418,6 @@ dependencies = [
  "tower",
  "tower-http 0.4.4",
  "utoipa",
- "uuid",
 ]
 
 [[package]]
@@ -2371,7 +2425,7 @@ name = "svc-itest-client-grpc"
 version = "0.0.2-develop.4"
 dependencies = [
  "cfg-if",
- "lib-common 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "lib-common 0.2.1-develop.0",
  "log",
  "logtest",
  "prost",
@@ -2386,27 +2440,24 @@ dependencies = [
 name = "svc-itest-client-rest"
 version = "0.0.2-develop.4"
 dependencies = [
- "chrono",
  "hyper",
- "lib-common 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "lib-common 0.2.1-develop.0",
  "serde",
  "serde_json",
  "tokio",
  "utoipa",
- "uuid",
 ]
 
 [[package]]
 name = "svc-storage"
-version = "0.11.1-develop.14"
-source = "git+https://github.com/aetheric-oss/svc-storage.git?tag=latest-develop#4da0a5575a4053f9297098dc21fb1273afd05744"
+version = "0.12.1"
+source = "git+https://github.com/aetheric-oss/svc-storage.git?tag=v0.12.1#c5af5f2eec27e78f091317c287583b6a771c9470"
 dependencies = [
  "anyhow",
  "byteorder",
  "bytes",
  "cargo-husky",
  "cfg-if",
- "chrono",
  "clap",
  "config",
  "deadpool",
@@ -2416,7 +2467,7 @@ dependencies = [
  "geo",
  "hyper",
  "lazy_static",
- "lib-common 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "lib-common 2.0.0",
  "log",
  "log4rs",
  "native-tls",
@@ -2442,19 +2493,18 @@ dependencies = [
  "tonic",
  "tonic-build",
  "tonic-health",
- "uuid",
 ]
 
 [[package]]
 name = "svc-storage-client-grpc"
-version = "0.11.1-develop.14"
-source = "git+https://github.com/aetheric-oss/svc-storage.git?tag=latest-develop#4da0a5575a4053f9297098dc21fb1273afd05744"
+version = "0.12.1"
+source = "git+https://github.com/aetheric-oss/svc-storage.git?tag=v0.12.1#c5af5f2eec27e78f091317c287583b6a771c9470"
 dependencies = [
  "anyhow",
  "cfg-if",
  "futures",
  "lazy_static",
- "lib-common 0.2.1-develop.0 (git+https://github.com/aetheric-oss/lib-common?tag=latest-develop)",
+ "lib-common 2.0.0",
  "log",
  "num-derive",
  "num-traits",
@@ -2472,7 +2522,6 @@ dependencies = [
  "tonic-build",
  "tower",
  "utoipa",
- "uuid",
 ]
 
 [[package]]

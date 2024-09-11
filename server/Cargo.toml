@@ -1,5 +1,5 @@
 [package]
-description = "Arrow template service gRPC server"
+description = "Aetheric template service gRPC server"
 keywords    = ["vtol", "server", "grpc", "rest", "itest"] # max 5
 name        = "svc-itest"
 version     = "0.0.2-develop.4"
@@ -33,7 +33,6 @@ stub_client = ["stub_backends"]
 anyhow       = "1.0"
 axum         = "0.5"
 cargo-husky  = "1"
-chrono       = { version = "0.4", features = ["serde"] }
 clap         = { version = "4.4", features = ["derive"] }
 config       = "0.13"
 dotenv       = "0.15"
@@ -49,20 +48,19 @@ tonic        = "0.10"
 tonic-health = "0.10"
 tower        = { version = "0.4", features = ["limit"] }
 tower-http   = { version = "0.4", features = ["cors", "trace"] }
-uuid         = { version = "1.7.0", features = ["v4", "serde"] }
 
 [dependencies.svc-gis-client-grpc]
 git = "https://github.com/aetheric-oss/svc-gis.git"
-tag = "latest-develop"
+tag = "v0.2.0"
 
 [dependencies.svc-storage-client-grpc]
 features = ["vertiport", "vertipad", "vehicle", "user", "scanner"]
 git      = "https://github.com/aetheric-oss/svc-storage.git"
-tag      = "latest-develop"
+tag      = "v0.12.1"
 
 [dependencies.lib-common]
 git = "https://github.com/aetheric-oss/lib-common"
-tag = "latest-develop"
+tag = "v2.0.0"
 
 [dependencies.log4rs]
 features = [

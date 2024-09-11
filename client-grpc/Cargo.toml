@@ -1,5 +1,5 @@
 [package]
-description = "Arrow itest service gRPC client"
+description = "Aetheric itest service gRPC client"
 keywords    = ["vtol", "client", "grpc", "itest"] # max 5
 name        = "svc-itest-client-grpc"
 version     = "0.0.2-develop.4"

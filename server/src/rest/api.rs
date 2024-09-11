@@ -8,12 +8,12 @@ pub use rest_types::*;
 
 use crate::grpc::client::GrpcClients;
 use axum::{extract::Extension, Json};
-use chrono::Utc;
 use hyper::StatusCode;
+use lib_common::time::Utc;
+use lib_common::uuid::Uuid;
 use svc_gis_client_grpc::client::{Coordinates, UpdateVertiportsRequest, Vertiport};
 use svc_gis_client_grpc::prelude::GisServiceClient;
 use svc_storage_client_grpc::prelude::{user::AuthMethod, *};
-use uuid::Uuid;
 
 /// Provides a way to tell a caller if the service is healthy.
 /// Checks dependencies, making sure all connections can be made.
@@ -29,7 +29,7 @@ use uuid::Uuid;
 pub async fn health_check(
     Extension(grpc_clients): Extension<GrpcClients>,
 ) -> Result<(), StatusCode> {
-    rest_debug!("(health_check) entry.");
+    rest_debug!("entry.");
 
     let mut ok = true;
 
@@ -41,17 +41,17 @@ pub async fn health_check(
         .is_err()
     {
         let error_msg = "svc-storage vertiport unavailable.".to_string();
-        rest_error!("(health_check) {}.", &error_msg);
+        rest_error!("{}.", &error_msg);
         ok = false;
     }
 
     match ok {
         true => {
-            rest_debug!("(health_check) healthy, all dependencies running.");
+            rest_debug!("healthy, all dependencies running.");
             Ok(())
         }
         false => {
-            rest_error!("(health_check) unhealthy, 1+ dependencies down.");
+            rest_error!("unhealthy, 1+ dependencies down.");
             Err(StatusCode::SERVICE_UNAVAILABLE)
         }
     }
@@ -72,29 +72,28 @@ pub async fn add_vertiport(
     Extension(grpc_clients): Extension<GrpcClients>,
     Json(payload): Json<AddVertiportRequest>,
 ) -> Result<Json<String>, StatusCode> {
-    rest_debug!("(add_vertiport) entry.");
+    rest_debug!("entry.");
 
     let schedule = "DTSTART:20221020T180000Z;DURATION:PT24H
     RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU"
         .to_string()
         .replace(' ', "");
     let schedule = Some(schedule);
-    let points: Vec<GeoPoint> = payload
+    let points: Vec<GeoPointZ> = payload
         .vertices
         .iter()
-        .map(|vx| GeoPoint {
-            latitude: vx.0,
-            longitude: vx.1,
-            altitude: payload.altitude,
+        .map(|vx| GeoPointZ {
+            y: vx.0,
+            x: vx.1,
+            z: payload.altitude,
         })
         .collect();
 
     let data = vertiport::Data {
         name: payload.label.clone(),
         description: payload.address.clone(),
-        geo_location: Some(GeoPolygon {
-            exterior: Some(GeoLineString { points }),
-            interiors: vec![],
+        geo_location: Some(GeoPolygonZ {
+            rings: vec![GeoLineStringZ { points }],
         }),
         schedule: schedule.clone(),
         created_at: None,
@@ -107,13 +106,13 @@ pub async fn add_vertiport(
         .insert(data)
         .await
         .map_err(|e| {
-            rest_error!("(add_vertiport) Error: {}.", e);
+            rest_error!("Error: {}.", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .into_inner()
         .object
         .ok_or_else(|| {
-            rest_error!("(add_vertiport) Error: no object returned.");
+            rest_error!("Error: no object returned.");
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .id;
@@ -140,7 +139,7 @@ pub async fn add_vertiport(
         .update_vertiports(request)
         .await
         .map_err(|e| {
-            rest_error!("(add_vertiport) Error: {}.", e);
+            rest_error!("Error: {}.", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?;
 
@@ -162,7 +161,7 @@ pub async fn add_vertipad(
     Extension(grpc_clients): Extension<GrpcClients>,
     Json(payload): Json<AddVertipadRequest>,
 ) -> Result<Json<String>, StatusCode> {
-    rest_debug!("(add_vertipad) entry.");
+    rest_debug!("entry.");
 
     let schedule = "DTSTART:20221020T180000Z;DURATION:PT24H
     RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU"
@@ -172,10 +171,10 @@ pub async fn add_vertipad(
     let data = vertipad::Data {
         vertiport_id: payload.vertiport_id.clone(),
         name: payload.label.clone(),
-        geo_location: Some(GeoPoint {
-            latitude: payload.latitude,
-            longitude: payload.longitude,
-            altitude: payload.altitude,
+        geo_location: Some(GeoPointZ {
+            y: payload.latitude,
+            x: payload.longitude,
+            z: payload.altitude,
         }),
         enabled: true,
         occupied: false,
@@ -190,13 +189,13 @@ pub async fn add_vertipad(
         .insert(data)
         .await
         .map_err(|e| {
-            rest_error!("(add_vertipad) Error: {}.", e);
+            rest_error!("Error: {}.", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .into_inner()
         .object
         .ok_or_else(|| {
-            rest_error!("(add_vertipad) Error: no object returned.");
+            rest_error!("Error: no object returned.");
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .id;
@@ -219,7 +218,7 @@ pub async fn add_aircraft(
     Extension(grpc_clients): Extension<GrpcClients>,
     Json(payload): Json<AddAircraftRequest>,
 ) -> Result<Json<String>, StatusCode> {
-    rest_debug!("(add_aircraft) entry.");
+    rest_debug!("entry.");
 
     let schedule = "DTSTART:20221020T180000Z;DURATION:PT24H
     RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU"
@@ -242,13 +241,13 @@ pub async fn add_aircraft(
         })
         .await
         .map_err(|e| {
-            rest_error!("(add_aircraft) Error: {}.", e);
+            rest_error!("Error: {}.", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .into_inner()
         .object
         .ok_or_else(|| {
-            rest_error!("(add_aircraft) Error: no object returned.");
+            rest_error!("Error: no object returned.");
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .id;
@@ -271,7 +270,7 @@ pub async fn add_user(
     Extension(grpc_clients): Extension<GrpcClients>,
     Json(payload): Json<AddUserRequest>,
 ) -> Result<Json<String>, StatusCode> {
-    rest_debug!("(add_user) entry.");
+    rest_debug!("entry.");
 
     let auth_method = AuthMethod::Local as i32;
     let user_id = grpc_clients
@@ -284,13 +283,13 @@ pub async fn add_user(
         })
         .await
         .map_err(|e| {
-            rest_error!("(add_user) Error: {}.", e);
+            rest_error!("Error: {}.", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .into_inner()
         .object
         .ok_or_else(|| {
-            rest_error!("(add_user) Error: no object returned.");
+            rest_error!("Error: no object returned.");
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .id;
@@ -333,10 +332,10 @@ pub async fn add_scanner(
     Extension(grpc_clients): Extension<GrpcClients>,
     Json(payload): Json<AddScannerRequest>,
 ) -> Result<Json<String>, StatusCode> {
-    rest_debug!("(add_scanner) entry.");
+    rest_debug!("entry.");
 
     let data: scanner::Data = payload.try_into().map_err(|e| {
-        rest_error!("(add_scanner) Error: {}.", e);
+        rest_error!("Error: {}.", e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
@@ -346,13 +345,13 @@ pub async fn add_scanner(
         .insert(data)
         .await
         .map_err(|e| {
-            rest_error!("(add_user) Error: {}.", e);
+            rest_error!("Error: {}.", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .into_inner()
         .object
         .ok_or_else(|| {
-            rest_error!("(add_user) Error: no object returned.");
+            rest_error!("Error: no object returned.");
             StatusCode::INTERNAL_SERVER_ERROR
         })?
         .id;
@@ -367,7 +366,7 @@ mod tests {
     #[tokio::test]
     async fn test_health_check_success() {
         crate::get_log_handle().await;
-        ut_info!("(test_health_check_success) Start.");
+        ut_info!("Start.");
 
         // Mock the GrpcClients extension
         let config = crate::Config::try_from_env().unwrap_or_default();
@@ -380,6 +379,6 @@ mod tests {
         println!("{:?}", result);
         assert!(result.is_ok());
 
-        ut_info!("(test_health_check_success) Success.");
+        ut_info!("Success.");
     }
 }
